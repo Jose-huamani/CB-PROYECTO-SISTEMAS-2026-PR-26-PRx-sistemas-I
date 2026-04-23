@@ -1,0 +1,25 @@
+<div
+  class="flex flex-column align-items-center justify-content-center min-h-screen px-3 py-5 gap-4"
+>
+  <h1 class="m-0">Prueba de paginación</h1>
+
+  <div class="w-full gap-2">
+    @for (fruit of paginatedFruits().items; track fruit.id) {
+      <div class="p-3 border-1 surface-border border-round">
+        <div class="font-semibold">{{ fruit.id }}. {{ fruit.name }}</div>
+        <p class="m-0 text-sm text-color-secondary">
+          {{ fruit.description }}
+        </p>
+      </div>
+    }
+  </div>
+
+  <div class="w-full">
+    <app-pagination
+      [first]="first()"
+      [rows]="rows()"
+      [totalRecords]="totalRecords()"
+      (pageChange)="handlePageChange($event)"
+    ></app-pagination>
+  </div>
+</div>
