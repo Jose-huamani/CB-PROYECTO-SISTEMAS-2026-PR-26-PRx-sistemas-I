@@ -5,6 +5,7 @@
 .auth-layout__image-section {
   min-height: 14rem;
   overflow: hidden;
+  position: relative;
 }
 
 .auth-layout__image-wrapper {
@@ -34,8 +35,10 @@
 
 .auth-layout__content {
   min-height: calc(100vh - 14rem);
+  background-color: var(--p-surface-50);
 }
 
 .auth-layout__content-wrapper {
-  max-width: 34rem;
+  max-width: 32rem;
+  width: 100%;
 }

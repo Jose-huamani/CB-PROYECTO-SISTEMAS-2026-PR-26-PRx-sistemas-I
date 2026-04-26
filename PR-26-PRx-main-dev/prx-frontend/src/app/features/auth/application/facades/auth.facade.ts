@@ -4,7 +4,11 @@ import { Observable, catchError, finalize, tap, throwError } from 'rxjs';
 import { TokenService } from '@core/services/token.service';
 import { AuthApi } from '@features/auth/infrastructure/api/auth.api';
 import { AuthStore } from '@features/auth/infrastructure/store/auth.store';
-import { AuthModel } from '@features/auth/domain/models/auth.model';
+import {
+  AuthModel,
+  isLoginTwoFactorPending,
+  LoginResultModel,
+} from '@features/auth/domain/models/auth.model';
 import { ConfirmRegisterRequest } from '@features/auth/domain/requests/confirm-register.request';
 import { ForgotPasswordRequest } from '@features/auth/domain/requests/forgot-password.request';
 import { LoginRequest } from '@features/auth/domain/requests/login.request';
@@ -13,6 +17,7 @@ import { RefreshRequest } from '@features/auth/domain/requests/refresh.request';
 import { RegisterRequestData } from '@features/auth/domain/requests/register-request.request';
 import { ResendCodeRequest } from '@features/auth/domain/requests/resend-code.request';
 import { ResetPasswordRequest } from '@features/auth/domain/requests/reset-password.request';
+import { VerifyLoginTwoFactorRequest } from '@features/auth/domain/requests/verify-login-two-factor.request';
 import { ApiResponseModel } from '@shared/models/api-response.model';
 import { CurrentUserModel } from '@shared/models/current-user.model';
 import { resolvePublicStorageUrl } from '@shared/utils/storage-url.util';
@@ -29,9 +34,28 @@ export class AuthFacade {
   readonly isAuthenticated = this.authStore.isAuthenticated;
   readonly loading = this.authStore.loading;
 
-  login(data: LoginRequest): Observable<ApiResponseModel<AuthModel>> {
+  login(data: LoginRequest): Observable<ApiResponseModel<LoginResultModel>> {
     return this.executeWithLoading(
       this.authApi.login(data).pipe(
+        tap((response) => {
+          const payload = response.data;
+
+          if (!payload || isLoginTwoFactorPending(payload)) {
+            return;
+          }
+
+          this.tokenService.setTokens(payload.accessToken, payload.refreshToken);
+          this.authStore.setCurrentUser(this.mapCurrentUser(payload.user));
+        }),
+      ),
+    );
+  }
+
+  verifyLoginTwoFactor(
+    data: VerifyLoginTwoFactorRequest,
+  ): Observable<ApiResponseModel<AuthModel>> {
+    return this.executeWithLoading(
+      this.authApi.verifyLoginTwoFactor(data).pipe(
         tap((response) => {
           const auth = response.data;
 
@@ -50,8 +74,21 @@ export class AuthFacade {
     return this.executeWithLoading(this.authApi.registerRequest(data));
   }
 
-  confirmRegister(data: ConfirmRegisterRequest): Observable<ApiResponseModel<void>> {
-    return this.executeWithLoading(this.authApi.confirmRegister(data));
+  confirmRegister(data: ConfirmRegisterRequest): Observable<ApiResponseModel<AuthModel>> {
+    return this.executeWithLoading(
+      this.authApi.confirmRegister(data).pipe(
+        tap((response) => {
+          const auth = response.data;
+
+          if (!auth) {
+            return;
+          }
+
+          this.tokenService.setTokens(auth.accessToken, auth.refreshToken);
+          this.authStore.setCurrentUser(this.mapCurrentUser(auth.user));
+        }),
+      ),
+    );
   }
 
   resendVerificationCode(data: ResendCodeRequest): Observable<ApiResponseModel<void>> {

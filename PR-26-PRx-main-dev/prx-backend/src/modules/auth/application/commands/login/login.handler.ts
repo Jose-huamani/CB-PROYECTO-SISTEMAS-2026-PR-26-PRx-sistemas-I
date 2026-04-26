@@ -2,29 +2,26 @@ import { Inject, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { LoginCommand } from '@modules/auth/application/commands/login/login.command';
-import { AuthResponseMapper } from '@modules/auth/application/mappers/auth-response.mapper';
-import { RefreshTokenEntity } from '@modules/auth/domain/entities/refresh-token.entity';
-import { SessionEntity } from '@modules/auth/domain/entities/session.entity';
-import { RefreshTokenRepository } from '@modules/auth/domain/repositories/refresh-token.repository';
-import { SessionRepository } from '@modules/auth/domain/repositories/session.repository';
-import { BcryptService } from '@modules/auth/infrastructure/adapters/bcrypt.service';
-import { JwtTokenService } from '@modules/auth/infrastructure/adapters/jwt-token.service';
-import { UserRepository } from '@modules/users/domain/repositories/user.repository';
-
+import { AUTH_CONSTANTS } from '@shared/constants/auth.constants';
 import { AUTH_MESSAGES } from '@modules/auth/application/constants/auth-messages.constants';
-import { JwtBasePayload } from '@shared/types/jwt-base-payload.type';
+import { LoginTwoFactorChallengeEntity } from '@modules/auth/domain/entities/login-two-factor-challenge.entity';
+import { LoginTwoFactorChallengeRepository } from '@modules/auth/domain/repositories/login-two-factor-challenge.repository';
+import { BcryptService } from '@modules/auth/infrastructure/adapters/bcrypt.service';
+import { VerificationCodeService } from '@modules/auth/infrastructure/adapters/verification-code.service';
+import { UserRepository } from '@modules/users/domain/repositories/user.repository';
+import { MailService } from '@shared/infrastructure/mail/mail.service';
+import { loginTwoFactorTemplate } from '@shared/infrastructure/mail/templates/auth/login-two-factor.template';
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand> {
   constructor(
     @Inject(UserRepository)
     private readonly userRepository: UserRepository,
-    @Inject(SessionRepository)
-    private readonly sessionRepository: SessionRepository,
-    @Inject(RefreshTokenRepository)
-    private readonly refreshTokenRepository: RefreshTokenRepository,
+    @Inject(LoginTwoFactorChallengeRepository)
+    private readonly loginTwoFactorChallengeRepository: LoginTwoFactorChallengeRepository,
     private readonly bcryptService: BcryptService,
-    private readonly jwtTokenService: JwtTokenService,
+    private readonly verificationCodeService: VerificationCodeService,
+    private readonly mailService: MailService,
   ) {}
 
   async execute(command: LoginCommand) {
@@ -47,41 +44,39 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
     }
 
-    const payload: JwtBasePayload = {
-      sub: user.id as number,
-      email: user.email,
-      username: user.username,
-      role: user.role,
-    };
+    await this.loginTwoFactorChallengeRepository.invalidatePendingForUser(
+      user.id as number,
+    );
 
-    const session = await this.sessionRepository.create(
-      new SessionEntity(
+    const code = this.verificationCodeService.generateCode();
+    const expiresAt = this.verificationCodeService.generateExpirationDate(
+      AUTH_CONSTANTS.LOGIN_TWO_FACTOR.EXPIRES_MINUTES,
+    );
+
+    const challenge = await this.loginTwoFactorChallengeRepository.create(
+      new LoginTwoFactorChallengeEntity(
         null,
         user.id as number,
+        code,
+        expiresAt,
         command.userAgent ?? null,
         command.ipAddress ?? null,
       ),
     );
 
-    const accessToken = await this.jwtTokenService.generateAccessToken(payload);
-    const refreshToken =
-      await this.jwtTokenService.generateRefreshToken(payload);
-
-    const refreshExpiresAt =
-      await this.jwtTokenService.calculateRefreshTokenExpiresAt();
-
-    await this.refreshTokenRepository.create(
-      new RefreshTokenEntity(
-        null,
-        session.id as string,
-        refreshToken,
-        refreshExpiresAt,
-      ),
+    await this.mailService.sendMail(
+      user.email,
+      'Código de verificación — inicio de sesión',
+      loginTwoFactorTemplate(code),
+      `Código 2FA inicio de sesión: ${code}`,
     );
 
     return {
-      message: AUTH_MESSAGES.LOGIN_SUCCESS,
-      data: AuthResponseMapper.toAuthResponse(user, accessToken, refreshToken),
+      message: AUTH_MESSAGES.LOGIN_TWO_FACTOR_SENT,
+      data: {
+        twoFactorRequired: true,
+        challengeId: challenge.id as string,
+      },
     };
   }
 }

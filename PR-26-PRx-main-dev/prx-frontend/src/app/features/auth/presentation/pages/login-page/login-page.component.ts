@@ -11,6 +11,7 @@ import { NotificationService } from '@core/services/notification.service';
 import { AuthFacade } from '@features/auth/application/facades/auth.facade';
 import { buildLoginFormFields } from '@features/auth/application/forms/login.form';
 import { AUTH_MESSAGES } from '@features/auth/constants/auth-messages.constants';
+import { isLoginTwoFactorPending } from '@features/auth/domain/models/auth.model';
 import { LoginRequest } from '@features/auth/domain/requests/login.request';
 import { UI_MESSAGES } from '@shared/constants/ui-messages.constants';
 import { NotificationMessage } from '@shared/types/notification-message.type';
@@ -63,6 +64,17 @@ export class LoginPageComponent {
       )
       .subscribe({
         next: (response) => {
+          const data = response.data;
+          if (isLoginTwoFactorPending(data)) {
+            this.notificationService.success(
+              'Verificación',
+              getApiNotificationMessage(response, AUTH_MESSAGES.LOGIN.TWO_FACTOR_SENT),
+            );
+            void this.router.navigate(['/auth/verificar-login'], {
+              queryParams: { challengeId: data.challengeId },
+            });
+            return;
+          }
           this.handleLoginSuccess(getApiNotificationMessage(response, AUTH_MESSAGES.LOGIN.SUCCESS));
         },
         error: (error: HttpErrorResponse) => {

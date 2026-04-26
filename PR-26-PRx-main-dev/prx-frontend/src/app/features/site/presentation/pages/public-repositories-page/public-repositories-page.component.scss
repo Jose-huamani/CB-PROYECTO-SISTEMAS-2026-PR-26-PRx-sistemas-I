@@ -1,0 +1,81 @@
+.public-repos__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.public-repos__hero {
+  padding: 2.5rem 0 2rem;
+  background: linear-gradient(
+    180deg,
+    var(--public-teal-soft) 0%,
+    var(--color-surface) 85%
+  );
+}
+
+.public-repos__hero-fox {
+  position: relative;
+  height: 120px;
+  max-width: 200px;
+  margin-bottom: 1.5rem;
+}
+
+.public-repos__hill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: linear-gradient(180deg, transparent 0%, #86efac 100%);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  opacity: 0.85;
+}
+
+.public-repos__fox {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 48px;
+  background: linear-gradient(145deg, #ea580c 0%, #c2410c 100%);
+  border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+}
+
+.public-repos__fox::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 8px;
+  width: 18px;
+  height: 18px;
+  background: #fff5f0;
+  border-radius: 50%;
+  box-shadow: inset -2px -2px 0 #fed7aa;
+}
+
+.public-repos__title {
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+  font-weight: 700;
+  color: var(--public-teal-dark);
+}
+
+.public-repos__grid-section {
+  padding-bottom: 2rem;
+}
+
+:host ::ng-deep .public-repos__search-btn.p-button {
+  background: var(--public-orange);
+  border-color: var(--public-orange);
+  color: #fff;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+:host ::ng-deep .public-repos__search-btn.p-button:not(:disabled):hover {
+  background: var(--public-orange-hover);
+  border-color: var(--public-orange-hover);
+}

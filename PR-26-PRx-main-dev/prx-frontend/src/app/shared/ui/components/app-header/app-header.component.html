@@ -1,32 +1,45 @@
 <header class="app-header">
   <div class="max-w-screen-xl mx-auto px-3 md:px-4 py-2">
     <div class="hidden md:flex align-items-center justify-content-between gap-3">
-      <div class="flex align-items-center gap-5">
+      <div class="flex align-items-center gap-4 flex-wrap">
         <a
           routerLink="/"
-          class="flex align-items-center"
+          class="app-header__brand flex align-items-center gap-2"
           (click)="closeMobileMenu()"
           aria-label="Ir al inicio"
         >
-          <img src="/logo/prx-logo.png" alt="PRX" class="app-header__logo" />
+          <img src="/logo/prx-logo.png" alt="" class="app-header__logo" />
+          <span class="app-header__brand-text">
+            <span class="app-header__brand-prx">PRX</span>
+            <span class="app-header__brand-frame">Frame</span>
+          </span>
         </a>
 
-        <span class="font-medium text-color-secondary">
-          @if (isAuthenticated()) {
-            Bienvenido de nuevo
-          } @else {
-            Bienvenido a PRX
-          }
-        </span>
+        @if (!isAuthenticated()) {
+          <a
+            routerLink="/repositorios"
+            class="app-header__nav-link font-medium"
+            (click)="closeMobileMenu()"
+          >
+            Explorar comunidad
+          </a>
+        }
       </div>
+
+      <div class="flex-1 min-w-0"></div>
 
       @if (isAuthenticated()) {
         <p-menubar [model]="menuItems()" class="app-header__menubar border-none bg-transparent" />
       }
 
-      <div class="flex align-items-center gap-3">
+      <div class="flex align-items-center gap-3 flex-shrink-0">
         @if (!isAuthenticated()) {
-          <p-button label="Iniciar sesión" icon="pi pi-sign-in" routerLink="/auth/login" />
+          <p-button
+            label="Iniciar sesión"
+            icon="pi pi-sign-in"
+            routerLink="/auth/login"
+            styleClass="app-header__cta-login"
+          />
 
           <p-button
             label="Registrarse"
@@ -100,7 +113,7 @@
               type="button"
               text
               class="app-header__mobile-item"
-              (click)="navigateAndClose('/explore')"
+              (click)="navigateAndClose('/repositorios')"
             >
               <span class="flex align-items-center gap-3">
                 <i class="pi pi-compass"></i>
@@ -191,9 +204,18 @@
         } @else {
           <div class="flex flex-column gap-2">
             <p-button
+              label="Explorar comunidad"
+              icon="pi pi-compass"
+              variant="text"
+              styleClass="w-full justify-content-start"
+              routerLink="/repositorios"
+              (onClick)="closeMobileMenu()"
+            />
+
+            <p-button
               label="Iniciar sesión"
               icon="pi pi-sign-in"
-              styleClass="w-full"
+              styleClass="w-full app-header__cta-login"
               routerLink="/auth/login"
               (onClick)="closeMobileMenu()"
             />

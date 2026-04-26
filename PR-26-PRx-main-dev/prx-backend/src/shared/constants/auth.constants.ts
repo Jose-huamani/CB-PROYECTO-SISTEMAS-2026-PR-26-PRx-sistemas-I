@@ -6,6 +6,9 @@ export const AUTH_CONSTANTS = {
   PASSWORD_RESET: {
     EXPIRES_MINUTES: 10,
   },
+  LOGIN_TWO_FACTOR: {
+    EXPIRES_MINUTES: 10,
+  },
   SECURITY: {
     BCRYPT_SALT_ROUNDS: 10,
   },

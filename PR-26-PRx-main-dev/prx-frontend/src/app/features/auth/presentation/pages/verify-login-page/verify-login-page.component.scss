@@ -1,0 +1,30 @@
+.verify-login-page__container {
+  max-width: 30rem;
+}
+
+.verify-login-page__logo {
+  width: 5.5rem;
+  max-width: 100%;
+}
+
+.verify-login-page__panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 28px rgba(45, 115, 108, 0.08);
+}
+
+.verify-login-page__link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: var(--color-primary);
+  font: inherit;
+  text-decoration: underline;
+}
+
+.verify-login-page__link-btn:hover {
+  color: var(--color-primary-hover);
+}

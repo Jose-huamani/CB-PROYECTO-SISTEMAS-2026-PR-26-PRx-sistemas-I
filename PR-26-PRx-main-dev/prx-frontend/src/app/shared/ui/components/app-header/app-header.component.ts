@@ -45,7 +45,7 @@ export class AppHeaderComponent {
     {
       label: 'Explorar',
       icon: 'pi pi-compass',
-      routerLink: '/explore',
+      routerLink: '/repositorios',
       command: () => this.closeMobileMenu(),
     },
     {

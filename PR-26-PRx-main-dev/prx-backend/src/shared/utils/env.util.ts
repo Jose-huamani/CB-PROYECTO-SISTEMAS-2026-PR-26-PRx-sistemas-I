@@ -20,3 +20,16 @@ export function toNumberOrDefault(
 
   return parsed;
 }
+
+/** Acepta true, 1, yes (mayúsculas/minúsculas, con trim y sin BOM). */
+export function parseEnvFlag(value: string | undefined): boolean {
+  if (value == null) {
+    return false;
+  }
+
+  const normalized = value.replace(/^\uFEFF/, '').trim().toLowerCase();
+
+  return (
+    normalized === 'true' || normalized === '1' || normalized === 'yes'
+  );
+}

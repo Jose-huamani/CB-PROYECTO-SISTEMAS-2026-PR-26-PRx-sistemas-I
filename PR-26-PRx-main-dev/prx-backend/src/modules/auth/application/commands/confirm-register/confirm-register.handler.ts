@@ -2,8 +2,8 @@ import { BadRequestException, ConflictException, Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { ConfirmRegisterCommand } from '@modules/auth/application/commands/confirm-register/confirm-register.command';
-import { UserResponseMapper } from '@modules/users/application/mappers/user-response.mapper';
 import { VerificationCodeRepository } from '@modules/auth/domain/repositories/verification-code.repository';
+import { CreateAuthSessionService } from '@modules/auth/infrastructure/adapters/create-auth-session.service';
 import { UserEntity } from '@modules/users/domain/entities/user.entity';
 import { UserRepository } from '@modules/users/domain/repositories/user.repository';
 import { Role } from '@generated-prisma/enums';
@@ -19,6 +19,7 @@ export class ConfirmRegisterHandler implements ICommandHandler<ConfirmRegisterCo
     @Inject(UserRepository)
     private readonly userRepository: UserRepository,
     private readonly avatarService: AvatarService,
+    private readonly createAuthSessionService: CreateAuthSessionService,
   ) {}
 
   async execute(command: ConfirmRegisterCommand) {
@@ -64,9 +65,15 @@ export class ConfirmRegisterHandler implements ICommandHandler<ConfirmRegisterCo
 
     await this.verificationCodeRepository.markAsUsed(verification.id as string);
 
+    const data = await this.createAuthSessionService.createForUser(
+      user,
+      command.userAgent ?? null,
+      command.ipAddress ?? null,
+    );
+
     return {
       message: AUTH_MESSAGES.REGISTER_CONFIRMED,
-      data: UserResponseMapper.toUserResponse(user),
+      data,
     };
   }
 }

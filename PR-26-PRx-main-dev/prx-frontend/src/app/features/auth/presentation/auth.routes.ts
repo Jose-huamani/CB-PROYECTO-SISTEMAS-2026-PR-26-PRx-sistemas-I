@@ -23,6 +23,18 @@ export const AUTH_ROUTES: Routes = [
           ),
       },
       {
+        path: 'verificar-login',
+        title: 'Verificar acceso',
+        canActivate: [guestGuard, requireQueryParamsGuard('challengeId', '/auth/login')],
+        data: {
+          authLayoutImages: AUTH_LAYOUT_IMAGES.AUTH_RECOVERY,
+        },
+        loadComponent: () =>
+          import('./pages/verify-login-page/verify-login-page.component').then(
+            (module) => module.VerifyLoginPageComponent,
+          ),
+      },
+      {
         path: 'register-request',
         title: 'Registrarse',
         canActivate: [guestGuard],

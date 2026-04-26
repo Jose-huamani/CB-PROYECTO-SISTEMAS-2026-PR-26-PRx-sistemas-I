@@ -1,25 +1,132 @@
-<div
-  class="flex flex-column align-items-center justify-content-center min-h-screen px-3 py-5 gap-4"
->
-  <h1 class="m-0">Prueba de paginación</h1>
-
-  <div class="w-full gap-2">
-    @for (fruit of paginatedFruits().items; track fruit.id) {
-      <div class="p-3 border-1 surface-border border-round">
-        <div class="font-semibold">{{ fruit.id }}. {{ fruit.name }}</div>
-        <p class="m-0 text-sm text-color-secondary">
-          {{ fruit.description }}
+<div class="landing">
+  <section class="landing__hero">
+    <div class="landing__inner grid align-items-center">
+      <div class="col-12 lg:col-6 landing__hero-copy">
+        <h1 class="landing__hero-title m-0 mb-3">
+          Transforma la realidad a través del conocimiento colectivo
+        </h1>
+        <p class="landing__hero-lead m-0 mb-4 text-lg text-color-secondary line-height-3">
+          PRX reúne repositorios, ideas y recursos compartidos por cocreadores de distintas disciplinas.
+          Explora, conecta y construye realidades junto a la comunidad.
         </p>
+        <p-button
+          label="Registrar"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          routerLink="/auth/register-request"
+          styleClass="landing__btn-primary"
+        />
       </div>
-    }
-  </div>
+      <div class="col-12 lg:col-6 flex justify-content-center lg:justify-content-end mt-5 lg:mt-0">
+        <div class="landing__hero-map" aria-hidden="true">
+          <div class="landing__hero-map-shape"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div class="w-full">
-    <app-pagination
-      [first]="first()"
-      [rows]="rows()"
-      [totalRecords]="totalRecords()"
-      (pageChange)="handlePageChange($event)"
-    ></app-pagination>
-  </div>
+  <section class="landing__section landing__how">
+    <div class="landing__inner">
+      <h2 class="landing__section-title text-center m-0 mb-2">Cómo funciona la plataforma</h2>
+      <p class="text-center text-color-secondary m-0 mb-5 max-w-30rem mx-auto line-height-3">
+        Tres pasos para empezar a cocrear y compartir conocimiento con otros.
+      </p>
+
+      <div class="grid">
+        <div class="col-12 md:col-4 mb-4 md:mb-0">
+          <article class="landing__step surface-border border-1 border-round p-4 h-full text-center">
+            <div class="landing__step-illu landing__step-illu--1 mb-3 mx-auto" aria-hidden="true"></div>
+            <h3 class="mt-0 mb-2 text-xl" style="color: var(--public-teal-dark)">Crea una cuenta</h3>
+            <p class="m-0 mb-4 text-color-secondary line-height-3">
+              Regístrate y configura tu perfil para formar parte de la comunidad PRX.
+            </p>
+            <p-button label="Conoce más" [link]="true" routerLink="/auth/register-request" />
+          </article>
+        </div>
+        <div class="col-12 md:col-4 mb-4 md:mb-0">
+          <article class="landing__step surface-border border-1 border-round p-4 h-full text-center">
+            <div class="landing__step-illu landing__step-illu--2 mb-3 mx-auto" aria-hidden="true"></div>
+            <h3 class="mt-0 mb-2 text-xl" style="color: var(--public-teal-dark)">Conecta con otros</h3>
+            <p class="m-0 mb-4 text-color-secondary line-height-3">
+              Explora repositorios públicos, invita colaboradores y participa en proyectos.
+            </p>
+            <p-button label="Conoce más" [link]="true" routerLink="/repositorios" />
+          </article>
+        </div>
+        <div class="col-12 md:col-4">
+          <article class="landing__step surface-border border-1 border-round p-4 h-full text-center">
+            <div class="landing__step-illu landing__step-illu--3 mb-3 mx-auto" aria-hidden="true"></div>
+            <h3 class="mt-0 mb-2 text-xl" style="color: var(--public-teal-dark)">Construye realidades</h3>
+            <p class="m-0 mb-4 text-color-secondary line-height-3">
+              Organiza archivos, notas y carpetas en repositorios que reflejen tu visión colectiva.
+            </p>
+            <p-button label="Conoce más" [link]="true" routerLink="/repositorios" />
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__section landing__repos-preview">
+    <div class="landing__inner">
+      <h2 class="landing__section-title text-center m-0 mb-2">Explora repositorios de la comunidad</h2>
+      <p class="text-center text-color-secondary m-0 mb-5 max-w-30rem mx-auto line-height-3">
+        Una muestra de proyectos compartidos. Descubre más en el explorador público.
+      </p>
+
+      <div class="grid">
+        @for (repo of previewRepos; track repo.id) {
+          <div class="col-12 sm:col-6 xl:col-3">
+            <app-repository-card
+              [title]="repo.title"
+              [author]="repo.author"
+              [excerpt]="repo.excerpt"
+              [stars]="repo.stars"
+              link="/repositorios"
+            />
+          </div>
+        }
+      </div>
+
+      <div class="flex justify-content-center mt-5">
+        <p-button
+          label="Explorar todos los repositorios"
+          icon="pi pi-arrow-right"
+          iconPos="right"
+          routerLink="/repositorios"
+          styleClass="landing__btn-primary"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="landing__section landing__mission">
+    <div class="landing__inner grid align-items-center">
+      <div class="col-12 lg:col-5 flex justify-content-center mb-5 lg:mb-0">
+        <div class="landing__mission-collage" aria-hidden="true">
+          <div class="landing__mission-blob landing__mission-blob--a"></div>
+          <div class="landing__mission-blob landing__mission-blob--b"></div>
+          <div class="landing__mission-blob landing__mission-blob--c"></div>
+        </div>
+      </div>
+      <div class="col-12 lg:col-7">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <h3 class="landing__mission-label m-0 mb-2">MISIÓN</h3>
+            <p class="m-0 text-color-secondary line-height-3">
+              Facilitar espacios digitales donde personas y comunidades compartan conocimiento de forma
+              abierta, respetuosa y colaborativa, fortaleciendo vínculos y proyectos de impacto local.
+            </p>
+          </div>
+          <div class="col-12 md:col-6 mt-4 md:mt-0">
+            <h3 class="landing__mission-label m-0 mb-2">VISIÓN</h3>
+            <p class="m-0 text-color-secondary line-height-3">
+              Ser una referencia regional para la cocreación de repositorios vivos que reflejen la diversidad
+              de voces, disciplinas y territorios que construyen el conocimiento colectivo.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>

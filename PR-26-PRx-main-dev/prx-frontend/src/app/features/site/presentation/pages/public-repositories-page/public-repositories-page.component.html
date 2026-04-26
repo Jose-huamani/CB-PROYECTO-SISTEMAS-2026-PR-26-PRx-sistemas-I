@@ -1,0 +1,67 @@
+<div class="public-repos">
+  <section class="public-repos__hero">
+    <div class="public-repos__inner">
+      <div class="public-repos__hero-fox" aria-hidden="true">
+        <div class="public-repos__fox"></div>
+        <div class="public-repos__hill"></div>
+      </div>
+      <h1 class="public-repos__title m-0 mb-2">Explorar repositorios de la comunidad</h1>
+      <p class="public-repos__lead m-0 mb-4 text-color-secondary text-lg line-height-3 max-w-48rem">
+        Encuentra proyectos, ideas y recursos compartidos por cocreadores de distintas disciplinas.
+      </p>
+
+      <div class="public-repos__search flex flex-column sm:flex-row gap-2 align-items-stretch">
+        <input
+          pInputText
+          type="search"
+          class="w-full flex-1"
+          placeholder="Buscar por título, autor o tema..."
+          name="repoSearch"
+          [(ngModel)]="draftQuery"
+          (keyup.enter)="onSearch()"
+        />
+        <p-button
+          label="Buscar"
+          icon="pi pi-search"
+          (onClick)="onSearch()"
+          styleClass="public-repos__search-btn"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="public-repos__grid-section">
+    <div class="public-repos__inner">
+      <div class="grid">
+        @for (repo of paginated().items; track repo.id) {
+          <div class="col-12 sm:col-6 xl:col-3">
+            <app-repository-card
+              [title]="repo.title"
+              [author]="repo.author"
+              [excerpt]="repo.excerpt"
+              [stars]="repo.stars"
+              link="/repositorios"
+            />
+          </div>
+        }
+      </div>
+
+      @if (paginated().items.length === 0) {
+        <p class="text-center text-color-secondary py-6 m-0">
+          No hay repositorios que coincidan con tu búsqueda. Prueba con otras palabras.
+        </p>
+      }
+
+      <div class="mt-4">
+        <app-pagination
+          [first]="first()"
+          [rows]="rows()"
+          [totalRecords]="totalRecords()"
+          [rowsPerPageOptions]="rowsPerPageOptions"
+          [itemsPerPageLabel]="'Items por página:'"
+          (pageChange)="handlePageChange($event)"
+        ></app-pagination>
+      </div>
+    </div>
+  </section>
+</div>

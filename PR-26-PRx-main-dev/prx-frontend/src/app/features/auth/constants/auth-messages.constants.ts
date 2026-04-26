@@ -2,6 +2,12 @@ export const AUTH_MESSAGES = {
   LOGIN: {
     SUCCESS: 'Inicio de sesión exitoso. Bienvenido a PRX.',
     ERROR: 'No se pudo iniciar sesión. Verifica tus credenciales.',
+    TWO_FACTOR_SENT: 'Revisa tu correo e ingresa el código para completar el acceso.',
+  },
+
+  VERIFY_LOGIN: {
+    SUCCESS: 'Acceso verificado. Bienvenido a PRX.',
+    ERROR: 'Código incorrecto o expirado. Vuelve a iniciar sesión.',
   },
 
   REGISTER_REQUEST: {

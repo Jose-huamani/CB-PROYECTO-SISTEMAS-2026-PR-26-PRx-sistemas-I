@@ -48,6 +48,7 @@ export class ForgotPasswordHandler implements ICommandHandler<ForgotPasswordComm
       email,
       'Código de recuperación',
       forgotPasswordTemplate(code),
+      `Código de recuperación: ${code}`,
     );
 
     return {

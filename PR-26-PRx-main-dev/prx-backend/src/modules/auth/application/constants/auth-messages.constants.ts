@@ -4,6 +4,10 @@ export const AUTH_MESSAGES = {
   REGISTER_CONFIRMED: 'Tu cuenta fue creada correctamente.',
 
   LOGIN_SUCCESS: 'Inicio de sesión exitoso. Bienvenido a PRX.',
+  LOGIN_TWO_FACTOR_SENT:
+    'Te enviamos un código de verificación a tu correo para completar el inicio de sesión.',
+  LOGIN_TWO_FACTOR_INVALID:
+    'El código es inválido o ha expirado. Vuelve a iniciar sesión.',
   LOGOUT_SUCCESS: 'Cerraste sesión correctamente.',
 
   PASSWORD_RESET_SENT: 'Te enviamos un código para recuperar tu cuenta.',

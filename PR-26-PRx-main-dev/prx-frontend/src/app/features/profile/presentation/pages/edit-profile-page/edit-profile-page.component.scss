@@ -1,0 +1,276 @@
+.edit-profile-page {
+  background-color: var(--p-surface-100);
+  min-height: calc(100vh - 5rem);
+}
+
+.edit-profile-page__container {
+  max-width: 42rem;
+}
+
+.edit-profile-page__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--public-teal-dark, var(--p-primary-700));
+  letter-spacing: -0.02em;
+}
+
+.edit-profile-page__card {
+  background: var(--color-surface);
+  border: 1px solid var(--p-surface-200);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(45, 115, 108, 0.08);
+  padding: 1.5rem 1.25rem 2rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem 2.25rem 2.25rem;
+  }
+}
+
+.edit-profile-page__card-header {
+  border-bottom: 1px solid var(--p-surface-200);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+// Avatar
+.edit-profile-page__avatar-wrapper {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 50%;
+
+  &:hover .edit-profile-page__avatar-overlay {
+    opacity: 1;
+  }
+}
+
+.edit-profile-page__avatar {
+  width: 7.5rem;
+  height: 7.5rem;
+
+  :host ::ng-deep .p-avatar {
+    width: 7.5rem;
+    height: 7.5rem;
+    font-size: 2.5rem;
+    border: 3px solid var(--p-surface-100);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.edit-profile-page__avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.edit-profile-page__username {
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.edit-profile-page__profile-row {
+  padding-bottom: 0.25rem;
+}
+
+.edit-profile-page__avatar-col {
+  flex-shrink: 0;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: auto;
+  }
+}
+
+.edit-profile-page__avatar-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.edit-profile-page__avatar-edit-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 0.35rem;
+  border: 2px solid #fff;
+  background: var(--public-teal, var(--p-primary-600));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transform: translate(15%, -15%);
+
+  i {
+    font-size: 0.75rem;
+  }
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+}
+
+// Paneles agrupados (mock)
+.edit-profile-page__panel {
+  border: 1px solid var(--p-surface-300);
+  border-radius: 0.65rem;
+  padding: 1.15rem 1rem;
+  background: var(--p-surface-50);
+
+  @media (min-width: 768px) {
+    padding: 1.25rem 1.25rem;
+  }
+}
+
+.edit-profile-page__panel-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--public-teal-dark, var(--p-primary-700));
+  text-transform: uppercase;
+  margin: 0 0 1rem 0;
+}
+
+.edit-profile-page__label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--public-teal-dark, var(--p-primary-700));
+  text-transform: uppercase;
+}
+
+.edit-profile-page__inline-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--public-teal-dark, var(--p-primary-700));
+  text-transform: uppercase;
+  min-width: 6rem;
+  flex-shrink: 0;
+  padding-top: 0.35rem;
+
+  @media (min-width: 576px) {
+    padding-top: 0.5rem;
+  }
+}
+
+.edit-profile-page__input {
+  border-radius: 0.5rem;
+}
+
+.edit-profile-page__addon {
+  background: var(--p-surface-50);
+  color: var(--color-text-soft);
+  border-color: var(--p-surface-300);
+}
+
+.edit-profile-page__error {
+  color: var(--p-red-500);
+  font-size: 0.85rem;
+}
+
+// Botones
+:host ::ng-deep .edit-profile-page__btn-explorer.p-button {
+  background: transparent;
+  border: 1px solid var(--p-surface-300);
+  color: var(--public-teal-dark, var(--p-primary-700));
+  font-weight: 600;
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .edit-profile-page__btn-explorer.p-button:not(:disabled):hover {
+  background: var(--p-surface-50);
+  border-color: var(--public-teal, var(--p-primary-500));
+}
+
+:host ::ng-deep .edit-profile-page__btn-add-tag.p-button {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border-color: var(--public-teal, var(--p-primary-600));
+  color: var(--public-teal-dark, var(--p-primary-700));
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .edit-profile-page__btn-save-password.p-button {
+  background: var(--public-teal, var(--p-primary-600));
+  border-color: var(--public-teal, var(--p-primary-600));
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.85rem 2rem;
+  border-radius: 0.5rem;
+  min-width: min(100%, 16rem);
+}
+
+:host ::ng-deep .edit-profile-page__btn-save-password.p-button:not(:disabled):hover {
+  background: var(--public-teal-dark, var(--p-primary-700));
+  border-color: var(--public-teal-dark, var(--p-primary-700));
+}
+
+:host ::ng-deep .edit-profile-page__btn-save-profile.p-button {
+  background: var(--public-teal-dark, var(--p-primary-700));
+  border-color: var(--public-teal-dark, var(--p-primary-700));
+  color: #fff;
+  font-weight: 700;
+  padding: 0.85rem 2.5rem;
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .edit-profile-page__btn-save-profile.p-button:not(:disabled):hover {
+  filter: brightness(0.95);
+}
+
+:host ::ng-deep .edit-profile-page__btn-cancel.p-button {
+  background: #fff;
+  border: 2px solid #dc2626;
+  color: #dc2626;
+  font-weight: 700;
+  padding: 0.85rem 2.5rem;
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .edit-profile-page__btn-cancel.p-button:not(:disabled):hover {
+  background: #fef2f2;
+}
+
+// Tags — icono eliminar más visible (rojo)
+:host ::ng-deep .edit-profile-page__tag.p-chip {
+  background: var(--p-surface-50);
+  border: 1px solid var(--p-surface-300);
+  color: var(--color-text);
+  font-weight: 500;
+  border-radius: 2rem;
+  padding: 0.35rem 0.65rem;
+}
+
+:host ::ng-deep .edit-profile-page__tag .p-chip-remove-icon {
+  color: #dc2626;
+}
+
+:host ::ng-deep .edit-profile-page__tag .p-chip-remove-icon:hover {
+  color: #b91c1c;
+}
+
+// Select altura alineada con inputs
+:host ::ng-deep .edit-profile-page__phone-select {
+  min-width: 0;
+}
+
+@media (min-width: 576px) {
+  :host ::ng-deep .edit-profile-page__phone-select .p-select {
+    min-width: 11rem;
+  }
+}

@@ -9,6 +9,7 @@ import { StorageModule } from '@shared/infrastructure/storage/storage.module';
 
 import { UsersModule } from '@modules/users/users.module';
 import { AuthModule } from '@modules/auth/auth.module';
+import { ProfileModule } from '@modules/profile/profile.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 
     UsersModule,
     AuthModule,
+    ProfileModule,
   ],
 })
 export class AppModule {}

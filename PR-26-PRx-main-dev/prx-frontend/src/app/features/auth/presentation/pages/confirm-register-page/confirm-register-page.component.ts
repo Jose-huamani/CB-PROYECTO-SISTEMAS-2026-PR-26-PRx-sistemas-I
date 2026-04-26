@@ -21,6 +21,7 @@ import {
   getApiNotificationMessage,
 } from '@shared/utils/api-notification.util';
 import { createCooldown } from '@shared/utils/cooldown.util';
+import { normalizeVerificationCode } from '@shared/utils/verification-code.util';
 
 @Component({
   selector: 'app-confirm-register-page',
@@ -145,9 +146,14 @@ export class ConfirmRegisterPageComponent {
   }
 
   private buildConfirmRegisterRequest(): ConfirmRegisterRequest {
+    const raw = this.form.getRawValue() as { code?: string | number | null };
+    const code = normalizeVerificationCode(raw.code);
+
+    this.model.code = code;
+
     return {
       email: this.email(),
-      code: this.model.code,
+      code,
     };
   }
 
@@ -177,7 +183,7 @@ export class ConfirmRegisterPageComponent {
 
   private handleConfirmRegisterSuccess(message: NotificationMessage): void {
     this.notificationService.success('Confirmación', message);
-    void this.router.navigate(['/auth/login']);
+    void this.router.navigateByUrl('/');
   }
 
   private handleConfirmRegisterError(message: NotificationMessage): void {

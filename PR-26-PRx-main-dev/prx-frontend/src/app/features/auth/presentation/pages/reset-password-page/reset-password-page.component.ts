@@ -19,6 +19,7 @@ import {
   getApiErrorNotificationMessage,
   getApiNotificationMessage,
 } from '@shared/utils/api-notification.util';
+import { normalizeVerificationCode } from '@shared/utils/verification-code.util';
 
 @Component({
   selector: 'app-reset-password-page',
@@ -92,9 +93,21 @@ export class ResetPasswordPageComponent {
   }
 
   private buildResetPasswordRequest(): ResetPasswordRequest {
+    const raw = this.form.getRawValue() as {
+      code?: string | number | null;
+      newPassword?: string;
+    };
+
+    const code = normalizeVerificationCode(raw.code);
+
+    this.model.code = code;
+    if (raw.newPassword != null) {
+      this.model.newPassword = raw.newPassword;
+    }
+
     return {
       email: this.email(),
-      code: this.model.code,
+      code,
       newPassword: this.model.newPassword,
     };
   }

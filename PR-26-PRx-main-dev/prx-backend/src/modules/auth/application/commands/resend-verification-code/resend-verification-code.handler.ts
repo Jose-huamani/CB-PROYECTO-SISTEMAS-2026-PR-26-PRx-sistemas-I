@@ -53,6 +53,7 @@ export class ResendVerificationCodeHandler implements ICommandHandler<ResendVeri
       email,
       'Nuevo código de verificación',
       resendVerificationCodeTemplate(newCode),
+      `Código de verificación: ${newCode}`,
     );
 
     return {

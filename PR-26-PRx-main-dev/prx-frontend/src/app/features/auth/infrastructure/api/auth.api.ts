@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { BaseFeatureApi } from '@core/api/base-feature.api';
 import { AuthApiContract } from '@features/auth/domain/contracts/auth-api.contract';
-import { AuthModel } from '@features/auth/domain/models/auth.model';
+import { AuthModel, LoginResultModel } from '@features/auth/domain/models/auth.model';
 import { ConfirmRegisterRequest } from '@features/auth/domain/requests/confirm-register.request';
 import { ForgotPasswordRequest } from '@features/auth/domain/requests/forgot-password.request';
 import { LoginRequest } from '@features/auth/domain/requests/login.request';
@@ -13,6 +13,7 @@ import { RefreshRequest } from '@features/auth/domain/requests/refresh.request';
 import { RegisterRequestData } from '@features/auth/domain/requests/register-request.request';
 import { ResendCodeRequest } from '@features/auth/domain/requests/resend-code.request';
 import { ResetPasswordRequest } from '@features/auth/domain/requests/reset-password.request';
+import { VerifyLoginTwoFactorRequest } from '@features/auth/domain/requests/verify-login-two-factor.request';
 import { AUTH_API_CONFIG } from '@features/auth/infrastructure/config/auth-api.config';
 import { CurrentUserModel } from '@shared/models/current-user.model';
 import { ApiResponseModel } from '@shared/models/api-response.model';
@@ -25,16 +26,25 @@ export class AuthApi extends BaseFeatureApi implements AuthApiContract {
     super(http, AUTH_API_CONFIG.base);
   }
 
-  login(data: LoginRequest): Observable<ApiResponseModel<AuthModel>> {
-    return this.post<AuthModel>(this.buildUrl(AUTH_API_CONFIG.endpoints.login), data);
+  login(data: LoginRequest): Observable<ApiResponseModel<LoginResultModel>> {
+    return this.post<LoginResultModel>(this.buildUrl(AUTH_API_CONFIG.endpoints.login), data);
+  }
+
+  verifyLoginTwoFactor(
+    data: VerifyLoginTwoFactorRequest,
+  ): Observable<ApiResponseModel<AuthModel>> {
+    return this.post<AuthModel>(
+      this.buildUrl(AUTH_API_CONFIG.endpoints.verifyLoginTwoFactor),
+      data,
+    );
   }
 
   registerRequest(data: RegisterRequestData): Observable<ApiResponseModel<void>> {
     return this.post<void>(this.buildUrl(AUTH_API_CONFIG.endpoints.registerRequest), data);
   }
 
-  confirmRegister(data: ConfirmRegisterRequest): Observable<ApiResponseModel<void>> {
-    return this.post<void>(this.buildUrl(AUTH_API_CONFIG.endpoints.confirmRegister), data);
+  confirmRegister(data: ConfirmRegisterRequest): Observable<ApiResponseModel<AuthModel>> {
+    return this.post<AuthModel>(this.buildUrl(AUTH_API_CONFIG.endpoints.confirmRegister), data);
   }
 
   resendVerificationCode(data: ResendCodeRequest): Observable<ApiResponseModel<void>> {

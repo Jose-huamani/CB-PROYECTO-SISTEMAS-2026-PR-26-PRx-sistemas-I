@@ -3,6 +3,7 @@ export const AUTH_API_CONFIG = {
 
   endpoints: {
     login: '/login',
+    verifyLoginTwoFactor: '/verify-login-two-factor',
     logout: '/logout',
     refresh: '/refresh',
     me: '/me',

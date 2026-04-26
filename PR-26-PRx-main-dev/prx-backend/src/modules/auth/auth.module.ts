@@ -10,6 +10,7 @@ import { AuthController } from '@modules/auth/presentation/controllers/auth.cont
 import { ConfirmRegisterHandler } from '@modules/auth/application/commands/confirm-register/confirm-register.handler';
 import { ForgotPasswordHandler } from '@modules/auth/application/commands/forgot-password/forgot-password.handler';
 import { LoginHandler } from '@modules/auth/application/commands/login/login.handler';
+import { VerifyLoginTwoFactorHandler } from '@modules/auth/application/commands/verify-login-two-factor/verify-login-two-factor.handler';
 import { LogoutHandler } from '@modules/auth/application/commands/logout/logout.handler';
 import { RefreshTokenHandler } from '@modules/auth/application/commands/refresh-token/refresh-token.handler';
 import { RegisterRequestHandler } from '@modules/auth/application/commands/register-request/register-request.handler';
@@ -17,15 +18,18 @@ import { ResendVerificationCodeHandler } from '@modules/auth/application/command
 import { ResetPasswordHandler } from '@modules/auth/application/commands/reset-password/reset-password.handler';
 import { MeHandler } from '@modules/auth/application/queries/me/me.handler';
 
+import { LoginTwoFactorChallengeRepository } from '@modules/auth/domain/repositories/login-two-factor-challenge.repository';
 import { PasswordResetRepository } from '@modules/auth/domain/repositories/password-reset.repository';
 import { RefreshTokenRepository } from '@modules/auth/domain/repositories/refresh-token.repository';
 import { SessionRepository } from '@modules/auth/domain/repositories/session.repository';
 import { VerificationCodeRepository } from '@modules/auth/domain/repositories/verification-code.repository';
 
 import { BcryptService } from '@modules/auth/infrastructure/adapters/bcrypt.service';
+import { CreateAuthSessionService } from '@modules/auth/infrastructure/adapters/create-auth-session.service';
 import { JwtTokenService } from '@modules/auth/infrastructure/adapters/jwt-token.service';
 import { VerificationCodeService } from '@modules/auth/infrastructure/adapters/verification-code.service';
 
+import { PrismaLoginTwoFactorChallengeRepository } from '@modules/auth/infrastructure/persistence/prisma-login-two-factor-challenge.repository';
 import { PrismaPasswordResetRepository } from '@modules/auth/infrastructure/persistence/prisma-password-reset.repository';
 import { PrismaRefreshTokenRepository } from '@modules/auth/infrastructure/persistence/prisma-refresh-token.repository';
 import { PrismaSessionRepository } from '@modules/auth/infrastructure/persistence/prisma-session.repository';
@@ -39,9 +43,11 @@ import { RolesGuard } from '@shared/presentation/guards/roles.guard';
 @Module({
   imports: [CqrsModule, JwtModule.register({}), UsersModule],
   controllers: [AuthController],
+  exports: [BcryptService],
   providers: [
     BcryptService,
     JwtTokenService,
+    CreateAuthSessionService,
     VerificationCodeService,
     AvatarService,
 
@@ -49,6 +55,7 @@ import { RolesGuard } from '@shared/presentation/guards/roles.guard';
     ConfirmRegisterHandler,
     ResendVerificationCodeHandler,
     LoginHandler,
+    VerifyLoginTwoFactorHandler,
     RefreshTokenHandler,
     LogoutHandler,
     ForgotPasswordHandler,
@@ -62,6 +69,10 @@ import { RolesGuard } from '@shared/presentation/guards/roles.guard';
     {
       provide: PasswordResetRepository,
       useClass: PrismaPasswordResetRepository,
+    },
+    {
+      provide: LoginTwoFactorChallengeRepository,
+      useClass: PrismaLoginTwoFactorChallengeRepository,
     },
     {
       provide: SessionRepository,

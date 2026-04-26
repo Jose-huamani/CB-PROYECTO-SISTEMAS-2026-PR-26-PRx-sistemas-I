@@ -19,6 +19,7 @@ import { RefreshTokenCommand } from '@modules/auth/application/commands/refresh-
 import { RegisterRequestCommand } from '@modules/auth/application/commands/register-request/register-request.command';
 import { ResendVerificationCodeCommand } from '@modules/auth/application/commands/resend-verification-code/resend-verification-code.command';
 import { ResetPasswordCommand } from '@modules/auth/application/commands/reset-password/reset-password.command';
+import { VerifyLoginTwoFactorCommand } from '@modules/auth/application/commands/verify-login-two-factor/verify-login-two-factor.command';
 
 import { ConfirmRegisterDto } from '@modules/auth/application/dto/requests/confirm-register.dto';
 import { ForgotPasswordDto } from '@modules/auth/application/dto/requests/forgot-password.dto';
@@ -28,6 +29,7 @@ import { RefreshTokenDto } from '@modules/auth/application/dto/requests/refresh-
 import { RegisterRequestDto } from '@modules/auth/application/dto/requests/register-request.dto';
 import { ResendCodeDto } from '@modules/auth/application/dto/requests/resend-code.dto';
 import { ResetPasswordDto } from '@modules/auth/application/dto/requests/reset-password.dto';
+import { VerifyLoginTwoFactorDto } from '@modules/auth/application/dto/requests/verify-login-two-factor.dto';
 
 import { MeQuery } from '@modules/auth/application/queries/me/me.query';
 
@@ -53,8 +55,14 @@ export class AuthController {
   @Public()
   @Post('confirm-register')
   @HttpCode(HttpStatus.CREATED)
-  confirmRegister(@Body() dto: ConfirmRegisterDto) {
-    return this.commandBus.execute(new ConfirmRegisterCommand(dto));
+  confirmRegister(
+    @Body() dto: ConfirmRegisterDto,
+    @Headers('user-agent') userAgent?: string,
+    @Ip() ipAddress?: string,
+  ) {
+    return this.commandBus.execute(
+      new ConfirmRegisterCommand(dto, userAgent, ipAddress),
+    );
   }
 
   @Public()
@@ -74,6 +82,14 @@ export class AuthController {
     @Ip() ipAddress?: string,
   ) {
     return this.commandBus.execute(new LoginCommand(dto, userAgent, ipAddress));
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 8, ttl: 60000 } })
+  @Post('verify-login-two-factor')
+  @HttpCode(HttpStatus.OK)
+  verifyLoginTwoFactor(@Body() dto: VerifyLoginTwoFactorDto) {
+    return this.commandBus.execute(new VerifyLoginTwoFactorCommand(dto));
   }
 
   @Public()

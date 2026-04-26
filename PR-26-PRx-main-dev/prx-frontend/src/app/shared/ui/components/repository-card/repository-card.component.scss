@@ -1,0 +1,39 @@
+.repo-card {
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  background: var(--color-surface);
+}
+
+.repo-card:hover {
+  box-shadow: 0 8px 24px rgba(45, 115, 108, 0.12);
+  border-color: color-mix(in srgb, var(--public-teal) 35%, var(--color-border));
+}
+
+.repo-card__icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--public-teal-soft);
+  color: var(--public-teal);
+  font-size: 1.25rem;
+}
+
+.repo-card__title {
+  color: var(--public-teal-dark);
+  font-weight: 600;
+}
+
+:host ::ng-deep .repo-card__cta.p-button {
+  background: var(--public-teal);
+  border-color: var(--public-teal);
+  color: #fff;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  padding: 0.5rem 0.85rem;
+}
+
+:host ::ng-deep .repo-card__cta.p-button:not(:disabled):hover {
+  background: var(--public-teal-dark);
+  border-color: var(--public-teal-dark);
+}

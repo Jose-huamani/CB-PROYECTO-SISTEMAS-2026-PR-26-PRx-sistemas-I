@@ -62,6 +62,7 @@ export class RegisterRequestHandler implements ICommandHandler<RegisterRequestCo
       email,
       'Código de verificación',
       registerRequestTemplate(code),
+      `Código de verificación: ${code}`,
     );
 
     return {

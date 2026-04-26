@@ -1,4 +1,4 @@
-import { toNumberOrDefault } from '@shared/utils/env.util';
+import { parseEnvFlag, toNumberOrDefault } from '@shared/utils/env.util';
 
 export default () => ({
   app: {
@@ -22,6 +22,15 @@ export default () => ({
     user: process.env.MAIL_USER ?? '',
     pass: process.env.MAIL_PASS ?? '',
     from: process.env.MAIL_FROM ?? '',
+    /**
+     * Sin SMTP: el código se registra en consola (MailService).
+     * - true si MAIL_SKIP_SEND=true
+     * - o en entornos distintos de production, salvo MAIL_FORCE_SMTP=true
+     */
+    skipSend:
+      parseEnvFlag(process.env.MAIL_SKIP_SEND) ||
+      (process.env.NODE_ENV !== 'production' &&
+        !parseEnvFlag(process.env.MAIL_FORCE_SMTP)),
   },
   storage: {
     accessKeyId: process.env.TIGRIS_STORAGE_ACCESS_KEY_ID ?? '',

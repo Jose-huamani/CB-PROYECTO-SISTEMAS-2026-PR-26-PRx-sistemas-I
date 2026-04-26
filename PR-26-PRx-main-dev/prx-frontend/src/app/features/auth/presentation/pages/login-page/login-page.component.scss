@@ -3,12 +3,15 @@
 }
 
 .login-page__logo {
-  width: 7rem;
+  width: 5.5rem;
   max-width: 100%;
 }
 
 .login-page__panel {
-  backdrop-filter: blur(6px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 28px rgba(45, 115, 108, 0.08);
 }
 
 .login-page__link {
