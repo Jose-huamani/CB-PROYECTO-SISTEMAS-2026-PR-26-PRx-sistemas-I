@@ -1,0 +1,366 @@
+<div class="edit-profile-page py-4 md:py-6 px-3 md:px-4">
+  <div class="edit-profile-page__container mx-auto">
+    @if (loading()) {
+      <div class="flex justify-content-center align-items-center py-8">
+        <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+      </div>
+    } @else {
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="edit-profile-page__card">
+          <div class="edit-profile-page__card-header flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <h1 class="m-0 edit-profile-page__title">Editar Perfil</h1>
+            <p-button
+              label="Volver al Explorador"
+              icon="pi pi-arrow-left"
+              iconPos="left"
+              styleClass="edit-profile-page__btn-explorer"
+              routerLink="/repositorios"
+            />
+          </div>
+
+          <!-- Fila superior: avatar izquierda + datos personales derecha (sin caja gris) -->
+          <div class="edit-profile-page__profile-row flex flex-column md:flex-row gap-4 md:gap-5 align-items-start mb-4">
+            <div class="edit-profile-page__avatar-col flex flex-column align-items-center align-self-start">
+              <div class="edit-profile-page__avatar-wrap">
+                <div class="edit-profile-page__avatar-wrapper" (click)="triggerAvatarUpload()">
+                  <p-avatar
+                    [image]="avatarPreview()"
+                    icon="pi pi-user"
+                    shape="circle"
+                    size="xlarge"
+                    class="edit-profile-page__avatar"
+                  />
+                  <div class="edit-profile-page__avatar-overlay">
+                    @if (uploadingAvatar()) {
+                      <i class="pi pi-spin pi-spinner"></i>
+                    } @else {
+                      <i class="pi pi-pencil"></i>
+                    }
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="edit-profile-page__avatar-edit-badge"
+                  (click)="triggerAvatarUpload(); $event.stopPropagation()"
+                  aria-label="Cambiar foto de perfil"
+                >
+                  <i class="pi pi-pencil"></i>
+                </button>
+              </div>
+              <p class="edit-profile-page__username m-0 mt-3 text-center">
+                {{ currentUser()?.username ?? 'nombreUsuario' }}
+              </p>
+              <input
+                #avatarInput
+                type="file"
+                accept="image/*"
+                class="hidden"
+                (change)="onAvatarSelected($event)"
+              />
+            </div>
+
+            <div class="edit-profile-page__names-col flex-1 w-full flex flex-column gap-3">
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-firstName">NOMBRE</label>
+                <input
+                  id="ep-firstName"
+                  pInputText
+                  formControlName="firstName"
+                  placeholder="Ej. Leon"
+                  class="w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-lastName">PRIMER APELLIDO</label>
+                <input
+                  id="ep-lastName"
+                  pInputText
+                  formControlName="lastName"
+                  placeholder="Ej. Galindo"
+                  class="w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-secondLastName">SEGUNDO APELLIDO (OPCIONAL)</label>
+                <input
+                  id="ep-secondLastName"
+                  pInputText
+                  formControlName="secondLastName"
+                  placeholder=""
+                  class="w-full edit-profile-page__input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <section class="edit-profile-page__panel mb-3">
+            <div class="flex flex-column gap-3">
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-email">CORREO</label>
+                <div class="p-inputgroup">
+                  <input
+                    id="ep-email"
+                    pInputText
+                    [value]="currentUser()?.email ?? ''"
+                    [disabled]="true"
+                    class="w-full edit-profile-page__input"
+                    placeholder="Ej. correo@gmail.com"
+                  />
+                  <span class="p-inputgroup-addon edit-profile-page__addon">
+                    <i class="pi pi-lock"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label">NÚMERO</label>
+                <div class="flex gap-2 flex-column sm:flex-row">
+                  <p-select
+                    formControlName="phoneCodeId"
+                    [options]="phoneCodes()"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Codigo Pais"
+                    styleClass="w-full edit-profile-page__phone-select"
+                  />
+                  <input
+                    pInputText
+                    formControlName="phoneNumber"
+                    placeholder="Escribe tu numero."
+                    class="flex-1 w-full edit-profile-page__input"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-bio">BIOGRAFÍA</label>
+                <textarea
+                  id="ep-bio"
+                  pTextarea
+                  formControlName="biography"
+                  placeholder="Añade una descripcion sobre ti."
+                  rows="5"
+                  class="w-full edit-profile-page__input"
+                  [autoResize]="true"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="edit-profile-page__panel mb-3">
+            <h2 class="edit-profile-page__panel-title">ÁREA GEOGRÁFICA</h2>
+            <div class="flex flex-column gap-3">
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <label class="edit-profile-page__inline-label sm:mb-0" for="ep-country">PAÍS</label>
+                <p-select
+                  id="ep-country"
+                  formControlName="countryId"
+                  [options]="countries()"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Elije el continente."
+                  [filter]="true"
+                  styleClass="w-full flex-1"
+                />
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <label class="edit-profile-page__inline-label sm:mb-0" for="ep-city">CIUDAD</label>
+                <div class="p-inputgroup flex-1 w-full">
+                  <input
+                    id="ep-city"
+                    pInputText
+                    formControlName="regionName"
+                    placeholder="Ej. informe-final"
+                    class="w-full edit-profile-page__input"
+                  />
+                  <span class="p-inputgroup-addon edit-profile-page__addon">
+                    <i class="pi pi-lock"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <label class="edit-profile-page__inline-label sm:mb-0" for="ep-province">PROVINCIA</label>
+                <div class="p-inputgroup flex-1 w-full">
+                  <input
+                    id="ep-province"
+                    pInputText
+                    formControlName="townName"
+                    placeholder="Ej. informe-final"
+                    class="w-full edit-profile-page__input"
+                  />
+                  <span class="p-inputgroup-addon edit-profile-page__addon">
+                    <i class="pi pi-lock"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="edit-profile-page__panel mb-3">
+            <h2 class="edit-profile-page__panel-title">REDES SOCIALES</h2>
+            <div class="flex flex-column gap-3">
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <span class="edit-profile-page__inline-label">LINKEDIN</span>
+                <input
+                  pInputText
+                  formControlName="linkedin"
+                  placeholder="Ej. otro.com"
+                  class="flex-1 w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <span class="edit-profile-page__inline-label">GITHUB</span>
+                <input
+                  pInputText
+                  formControlName="github"
+                  placeholder="Ej. otro.com"
+                  class="flex-1 w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <span class="edit-profile-page__inline-label">FACEBOOK</span>
+                <input
+                  pInputText
+                  formControlName="facebook"
+                  placeholder="Ej. facebook.com"
+                  class="flex-1 w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <span class="edit-profile-page__inline-label">X</span>
+                <input
+                  pInputText
+                  formControlName="twitter"
+                  placeholder="Ej. otro.com"
+                  class="flex-1 w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <span class="edit-profile-page__inline-label">INSTAGRAM</span>
+                <input
+                  pInputText
+                  formControlName="instagram"
+                  placeholder="Ej. instagram.com"
+                  class="flex-1 w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column sm:flex-row sm:align-items-center gap-2">
+                <span class="edit-profile-page__inline-label">YOUTUBE</span>
+                <input
+                  pInputText
+                  formControlName="youtube"
+                  placeholder="Ej. otro.com"
+                  class="flex-1 w-full edit-profile-page__input"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="edit-profile-page__panel mb-3">
+            <h2 class="edit-profile-page__panel-title">ÁREA DE INTERÉS</h2>
+            <div class="flex flex-column sm:flex-row gap-2 align-items-stretch mb-3">
+              <input
+                #tagInput
+                pInputText
+                placeholder="Ej. Ciencias, Biologia, etc."
+                class="flex-1 edit-profile-page__input w-full"
+                (keydown)="onTagInputKeydown($event)"
+                (input)="onTagInputChange($any($event.target).value)"
+              />
+              <p-button
+                type="button"
+                label="Agregar Tag"
+                icon="pi pi-tags"
+                iconPos="left"
+                styleClass="edit-profile-page__btn-add-tag"
+                (onClick)="addTag()"
+              />
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @for (tag of tags(); track tag) {
+                <p-chip
+                  [label]="tag"
+                  [removable]="true"
+                  (onRemove)="removeTag(tag)"
+                  styleClass="edit-profile-page__tag"
+                />
+              }
+            </div>
+          </section>
+
+          <section class="edit-profile-page__panel mb-4" [formGroup]="passwordForm">
+            <h2 class="edit-profile-page__panel-title">CAMBIAR CONTRASEÑA</h2>
+            <div class="flex flex-column gap-3">
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-cur-pw">CONTRASEÑA ACTUAL</label>
+                <p-password
+                  id="ep-cur-pw"
+                  formControlName="currentPassword"
+                  placeholder=""
+                  [feedback]="false"
+                  [toggleMask]="true"
+                  styleClass="w-full"
+                  inputStyleClass="w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-new-pw">NUEVA CONTRASEÑA</label>
+                <p-password
+                  id="ep-new-pw"
+                  formControlName="newPassword"
+                  placeholder=""
+                  [feedback]="true"
+                  [toggleMask]="true"
+                  styleClass="w-full"
+                  inputStyleClass="w-full edit-profile-page__input"
+                />
+              </div>
+              <div class="flex flex-column gap-1">
+                <label class="edit-profile-page__label" for="ep-confirm-pw">CONFIRMAR NUEVA CONTRASEÑA</label>
+                <p-password
+                  id="ep-confirm-pw"
+                  formControlName="confirmPassword"
+                  placeholder=""
+                  [feedback]="false"
+                  [toggleMask]="true"
+                  styleClass="w-full"
+                  inputStyleClass="w-full edit-profile-page__input"
+                />
+                @if (passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched) {
+                  <small class="edit-profile-page__error">Las contraseñas no coinciden.</small>
+                }
+              </div>
+              <div class="flex justify-content-center pt-2">
+                <p-button
+                  type="button"
+                  label="GUARDAR CAMBIOS"
+                  styleClass="edit-profile-page__btn-save-password w-full sm:w-auto"
+                  [loading]="savingPassword()"
+                  [disabled]="savingPassword()"
+                  (onClick)="savePassword()"
+                />
+              </div>
+            </div>
+          </section>
+
+          <div
+            class="edit-profile-page__footer-actions flex flex-column sm:flex-row justify-content-between align-items-stretch sm:align-items-center gap-3 pt-2"
+          >
+            <p-button
+              type="submit"
+              label="Guardar Edicion"
+              styleClass="edit-profile-page__btn-save-profile w-full sm:w-auto"
+              [loading]="saving()"
+              [disabled]="saving()"
+            />
+            <p-button
+              type="button"
+              label="Cancelar"
+              styleClass="edit-profile-page__btn-cancel w-full sm:w-auto"
+              [disabled]="saving()"
+              (onClick)="cancel()"
+            />
+          </div>
+        </div>
+      </form>
+    }
+  </div>
+</div>

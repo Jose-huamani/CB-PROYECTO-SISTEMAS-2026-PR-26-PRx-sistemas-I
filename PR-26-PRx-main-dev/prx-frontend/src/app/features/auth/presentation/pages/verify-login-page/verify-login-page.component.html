@@ -1,0 +1,51 @@
+<section class="flex align-items-center justify-content-center w-full">
+  <div class="w-full mx-auto px-3 sm:px-4 verify-login-page__container">
+    <div class="flex flex-column align-items-center text-center mb-3 md:mb-4">
+      <img src="/logo/prx-logo.png" alt="Logo de PRX" class="mb-3 verify-login-page__logo" />
+
+      <div class="flex align-items-center gap-2 mb-2">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-arrow-left"
+          text
+          rounded
+          (click)="goBack()"
+        ></button>
+
+        <h1 class="m-0">Verificación en dos pasos</h1>
+      </div>
+
+      <p class="m-0 text-sm text-color-secondary">
+        Ingresa el código de 6 dígitos que enviamos a tu correo para completar el inicio de sesión.
+      </p>
+    </div>
+
+    <div class="p-3 md:p-4 verify-login-page__panel">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-column gap-3">
+        <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+
+        <p class="text-center text-sm text-color-secondary m-0">
+          El código expira en {{ verificationCodeExpiresMinutes }} minutos.
+        </p>
+
+        <p-button
+          type="submit"
+          label="Verificar y entrar"
+          styleClass="w-full"
+          size="large"
+          [raised]="true"
+          [loading]="submitting()"
+          [disabled]="submitting()"
+        ></p-button>
+
+        <p class="text-center text-sm text-color-secondary m-0">
+          ¿No recibiste el código?
+          <button type="button" class="verify-login-page__link-btn" (click)="goBack()">
+            Volver a iniciar sesión
+          </button>
+        </p>
+      </form>
+    </div>
+  </div>
+</section>

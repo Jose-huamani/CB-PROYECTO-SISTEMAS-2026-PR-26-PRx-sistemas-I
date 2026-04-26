@@ -1,0 +1,26 @@
+<article class="repo-card surface-card border-1 surface-border border-round p-4 h-full flex flex-column">
+  <div class="repo-card__icon mb-3 flex align-items-center justify-content-center">
+    <i class="pi pi-database" aria-hidden="true"></i>
+  </div>
+
+  <h3 class="repo-card__title m-0 mb-2 text-lg">{{ title() }}</h3>
+  <p class="repo-card__author m-0 mb-2 text-sm text-color-secondary">Autor: {{ author() }}</p>
+  <p class="repo-card__excerpt m-0 mb-4 text-sm text-color-secondary line-height-3 flex-1">
+    {{ excerpt() }}
+  </p>
+
+  <div class="flex align-items-center justify-content-between gap-2 mt-auto">
+    <span class="flex align-items-center gap-1 text-sm text-color-secondary">
+      <i class="pi pi-star-fill" style="color: var(--color-accent)"></i>
+      {{ stars() }}
+    </span>
+    <p-button
+      label="ver más"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      [routerLink]="link()"
+      styleClass="repo-card__cta"
+      [link]="true"
+    />
+  </div>
+</article>
